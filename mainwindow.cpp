@@ -1,4 +1,5 @@
 #include <QGraphicsPixmapItem>
+#include <QFileDialog>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -6,7 +7,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+	ui(new Ui::MainWindow),
+	_opened(false)
 {
 	ui->setupUi(this);
 
@@ -23,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	player->play();
 #endif
 
+	connect(ui->actionOpen_File, SIGNAL(triggered()), SLOT(actionFileOpen()));
+
 	pixmapItem = new QGraphicsPixmapItem();
 	ui->graphicsView->scene()->addItem(pixmapItem);
 	polylineItem = new GraphicsItemPolyline(ui->graphicsView->scene());
@@ -33,9 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //	captureFilter.moveToThread(&captureThread);
 	detectFilter.moveToThread(&detectThread);
 //	detectFilter.connect(&captureFilter, SIGNAL(matReady(cv::Mat)), SLOT(processFrame(cv::Mat)));
-	this->connect(&detectFilter, SIGNAL(imageReady(QImage)), SLOT(setImage(QImage)));
-	QMetaObject::invokeMethod(&detectFilter, "startFile",
-		Q_ARG(QString, "c:\\Users\\Vyacheslav\\Projects\\TestVideo\\day.avi"));
+	connect(&detectFilter, SIGNAL(imageReady(QImage)), SLOT(setImage(QImage)));
 }
 
 MainWindow::~MainWindow() {
@@ -50,4 +52,15 @@ MainWindow::~MainWindow() {
 
 void MainWindow::setImage(const QImage& image) {
 	pixmapItem->setPixmap(QPixmap::fromImage(image));
+}
+
+void MainWindow::actionFileOpen() {
+	if (_opened)
+		return;
+	auto fileName = QFileDialog::getOpenFileName(this,
+		tr("Open Video"), QString(), tr("Video Files (*.*)"));
+	if (!fileName.isEmpty()) {
+		QMetaObject::invokeMethod(&detectFilter, "startFile", Q_ARG(QString, fileName));
+		_opened = true;
+	}
 }

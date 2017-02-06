@@ -18,11 +18,13 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 	Q_SLOT void setImage(const QImage& image);
+	Q_SLOT void actionFileOpen();
 
 private:
 	Ui::MainWindow *ui;
 	QGraphicsPixmapItem *pixmapItem;
 	GraphicsItemPolyline *polylineItem;
+	bool _opened;
 
 	QThread captureThread, detectThread;
 	DetectFilter detectFilter;
