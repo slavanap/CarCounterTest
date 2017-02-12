@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui multimediawidgets
+QT += core gui multimedia multimediawidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = CarCounter
@@ -33,13 +33,15 @@ HEADERS += \
     mainwindow.h \
     GraphicsItemPolyline.h \
     ImageViewer.h \
-    processing.h
+    processing.h \
+    QtUtility.h
 
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
     GraphicsItemPolyline.cpp \
     ImageViewer.cpp \
-    processing.cpp
+    processing.cpp \
+    QtUtility.cpp
 
 FORMS += mainwindow.ui

@@ -5,6 +5,14 @@
 #include <vector>
 #include "processing.h"
 
+CarDescriptor::CarDescriptor() :
+	isMatchFound(true),
+	isTracked(true),
+	numFramesWithoutMatch(0)
+{
+	// empty
+}
+
 CarDescriptor::CarDescriptor(const std::vector<cv::Point>& contour) :
 	contour(contour),
 	boundingRect(cv::boundingRect(contour)),
@@ -162,23 +170,18 @@ void drawCarsCount(int &carCount, cv::Mat& image) {
 }
 
 DetectFilter::DetectFilter(QObject* parent) :
-	QObject(parent),
-	_dropFrames(true),
-	_frameCount(0),
+	AbstractFilter(parent),
+	_mutex(QMutex::Recursive),
 	_carCount(0)
 {
 	_structuringElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
 }
 
-void DetectFilter::setSegments(const QVector<QLineF>& segments) {
-	//
-}
-
-void DetectFilter::process(cv::Mat currentFrame) {
+bool DetectFilter::process(cv::Mat& currentFrame) {
 	_frameCount++;
 	if (_prevFrame.empty()) {
-		_prevFrame = currentFrame;
-		return;
+//		_prevFrame = currentFrame;
+		return true;
 	}
 
 	// explicit parameters (temporary)
@@ -187,7 +190,7 @@ void DetectFilter::process(cv::Mat currentFrame) {
 	crossingLine[0] = cv::Point(0, lineHPos);
 	crossingLine[1] = cv::Point(currentFrame.cols - 1, lineHPos);
 	///
-	_currentFrameCars.clear();
+	_currentFrameCars.resize(0);
 
 	cv::Mat prevFrameCopy, curFrameCopy, imgDifference, imgThresh;
 	cv::cvtColor(currentFrame, curFrameCopy, CV_BGR2GRAY);
@@ -232,20 +235,17 @@ void DetectFilter::process(cv::Mat currentFrame) {
 	show(imgThresh.size(), _cars, "trackedCars");
 #endif
 
+	_prevFrame = currentFrame;
+
 	// prepare visualization
-	auto result = currentFrame.clone();
-	drawCarsInfo(_cars, result);
+	currentFrame = currentFrame.clone();
+	drawCarsInfo(_cars, currentFrame);
 	bool crossed = checkIfLineCrossed(_cars, lineHPos, _carCount);
 	if (crossed)
-		cv::line(result, crossingLine[0], crossingLine[1], GREEN, 2);
+		cv::line(currentFrame, crossingLine[0], crossingLine[1], GREEN, 2);
 	else
-		cv::line(result, crossingLine[0], crossingLine[1], RED, 2);
-	drawCarsCount(_carCount, result);
-	cv::resize(result, result, cv::Size(), 0.5, 0.5, cv::INTER_AREA);
-	cv::cvtColor(result, result, CV_BGR2RGB);
-	QImage image(result.data, result.cols, result.rows, (int)result.step,
-		QImage::Format_RGB888, &matDeleter, new cv::Mat(result));
-	emit imageReady(image);
-
-	_prevFrame = currentFrame;
+		cv::line(currentFrame, crossingLine[0], crossingLine[1], RED, 2);
+	drawCarsCount(_carCount, currentFrame);
+	//cv::resize(result, result, cv::Size(), 0.5, 0.5, cv::INTER_AREA);
+	return true;
 }

@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 
 int main(int argc, char* argv[]) {
-	qRegisterMetaType<cv::Mat>();
+//	qRegisterMetaType<cv::Mat>();
 	QApplication a(argc, argv);
 	MainWindow w;
 	w.show();

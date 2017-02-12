@@ -1,3 +1,4 @@
+#include <QGraphicsVideoItem>
 #include <QGraphicsPixmapItem>
 #include <QFileDialog>
 
@@ -7,47 +8,27 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow),
-	_opened(false)
+	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-
-	ui->graphicsView->setScene(new QGraphicsScene(this));
-	//ui->graphicsView->scene()->setSceneRect(QRectF(0, 0, 640, 480));
-
-#if 0
-	auto player = new QMediaPlayer(this);
-	QGraphicsVideoItem *item = new QGraphicsVideoItem;
-	player->setVideoOutput(item);
-	ui->graphicsView->scene()->addItem(item);
-	ui->graphicsView->show();
-	player->setMedia(QUrl::fromLocalFile("c:\\Users\\Vyacheslav\\Projects\\TestVideo\\day.avi"));
-	player->play();
-#endif
-
 	connect(ui->actionOpen_File, SIGNAL(triggered()), SLOT(actionFileOpen()));
 
-	pixmapItem = new QGraphicsPixmapItem();
-	ui->graphicsView->scene()->addItem(pixmapItem);
-	polylineItem = new GraphicsItemPolyline(ui->graphicsView->scene());
+	ui->graphicsView->setScene(new QGraphicsScene(this));
+//	ui->graphicsView->scene()->setSceneRect(QRectF(0, 0, 640, 480));
 
-	detectFilter.setDropFrames(false);
-//	captureThread.start();
-	detectThread.start();
-//	captureFilter.moveToThread(&captureThread);
-	detectFilter.moveToThread(&detectThread);
-//	detectFilter.connect(&captureFilter, SIGNAL(matReady(cv::Mat)), SLOT(processFrame(cv::Mat)));
-	connect(&detectFilter, SIGNAL(imageReady(QImage)), SLOT(setImage(QImage)));
+	pixmapItem.reset(new QGraphicsPixmapItem());
+	ui->graphicsView->scene()->addItem(pixmapItem.data());
+	filterThread.start();
+	filter.moveToThread(&filterThread);
+
+	polylineItem.reset(new GraphicsItemPolyline(ui->graphicsView->scene()));
+	connect(&filter, SIGNAL(newFrame(QImage)), SLOT(setImage(QImage)));
 }
 
 MainWindow::~MainWindow() {
-	captureThread.quit();
-	detectThread.quit();
-	captureThread.wait();
-	detectThread.wait();
-
+	filterThread.quit();
+	filterThread.wait();
 	delete ui;
-	delete pixmapItem;
 }
 
 void MainWindow::setImage(const QImage& image) {
@@ -55,12 +36,8 @@ void MainWindow::setImage(const QImage& image) {
 }
 
 void MainWindow::actionFileOpen() {
-	if (_opened)
-		return;
 	auto fileName = QFileDialog::getOpenFileName(this,
 		tr("Open Video"), QString(), tr("Video Files (*.*)"));
-	if (!fileName.isEmpty()) {
-		QMetaObject::invokeMethod(&detectFilter, "startFile", Q_ARG(QString, fileName));
-		_opened = true;
-	}
+	if (!fileName.isEmpty())
+		QMetaObject::invokeMethod(&filter, "open", Q_ARG(QString, fileName));
 }
