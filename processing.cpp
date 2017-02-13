@@ -140,7 +140,7 @@ DetectFilter::DetectFilter(QObject* parent) :
 	_mutex(QMutex::Recursive),
 	_carsCount(0)
 {
-	_structuringElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
+	_structuringElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
 }
 
 bool DetectFilter::process(cv::Mat& currentFrame) {
@@ -165,7 +165,7 @@ bool DetectFilter::process(cv::Mat& currentFrame) {
 		cv::erode(imgThresh, imgThresh, _structuringElement);
 	}
 	std::vector<std::vector<cv::Point>> contours;
-	cv::findContours(imgThresh, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_L1);
+	cv::findContours(imgThresh, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_KCOS);
 #if SHOW_STEPS
 	show(imgThresh.size(), contours, "contours");
 #endif
