@@ -106,6 +106,7 @@ QRectF GraphicsItemPolyline::boundingRect() const {
 }
 
 void GraphicsItemPolyline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+#if 0
 	QMutexLocker lock(&_mutex);
 	Q_UNUSED(option);
 	Q_UNUSED(widget);
@@ -123,6 +124,7 @@ void GraphicsItemPolyline::paint(QPainter *painter, const QStyleOptionGraphicsIt
 		lastPoint = current.cache;
 	}
 	painter->setPen(oldPen);
+#endif
 }
 
 QVector<QLineF> GraphicsItemPolyline::segments() const {
@@ -147,6 +149,7 @@ void GraphicsItemPolyline::mousePressEvent(QGraphicsSceneMouseEvent* ev) {
 void GraphicsItemPolyline::InsertPoint(int pos, const QPointF& pt) {
 	QMutexLocker lock(&_mutex);
 	_points.insert(pos, Item(pt, this));
+	emit segmentsUpdated(segments());
 	update();
 }
 
@@ -156,6 +159,7 @@ bool GraphicsItemPolyline::UpdatePoint(int pos) {
 	auto newValue = point.object->pos();
 	if (point.cache != newValue) {
 		point.cache = newValue;
+		emit segmentsUpdated(segments());
 		return true;
 	}
 	return false;
@@ -165,6 +169,7 @@ void GraphicsItemPolyline::DeletePoint(int pos) {
 	QMutexLocker lock(&_mutex);
 	scene()->removeItem(_points[pos].object);
 	_points.removeAt(pos);
+	emit segmentsUpdated(segments());
 	update();
 }
 
@@ -232,5 +237,6 @@ void GraphicsItemPolyline::menuInvertSegment() {
 	int pos = IndexOfSegment(_menuPoint);
 	auto &point = _points[pos];
 	point.invertDirection = !point.invertDirection;
+	emit segmentsUpdated(segments());
 	update();
 }

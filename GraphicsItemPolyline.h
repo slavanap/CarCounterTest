@@ -34,6 +34,7 @@ public:
 	QRectF boundingRect() const override;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 	QVector<QLineF> segments() const;
+	Q_SIGNAL void segmentsUpdated(const QVector<QLineF>& segments);
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

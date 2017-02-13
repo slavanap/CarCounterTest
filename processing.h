@@ -6,6 +6,7 @@
 #include <QMutex>
 #include <QObject>
 #include <QTimerEvent>
+#include <list>
 #include <vector>
 #include <opencv2/opencv.hpp>
 
@@ -18,7 +19,7 @@ struct CarDescriptor {
 	double diagonalSize;
 	double aspectRatio;
 	bool isMatchFound;
-	bool isTracked;
+	bool isCounted;
 	int numFramesWithoutMatch;
 	cv::Point predictedNextPos;
 	CarDescriptor();
@@ -42,6 +43,7 @@ public:
 	Q_SLOT void setSegments(const QVector<QLineF>& segments) {
 		QMutexLocker lock(&_mutex);
 		_segments = segments;
+		_carsCount.resize(_segments.size());
 	}
 
 protected:
@@ -50,9 +52,9 @@ protected:
 private:
 	mutable QMutex _mutex;
 	QVector<QLineF> _segments;
+	QVector<int> _carsCount;
 
-	std::vector<CarDescriptor> _cars, _currentFrameCars;
+	std::list<CarDescriptor> _cars, _currentFrameCars;
 	cv::Mat _prevFrame;
 	cv::Mat _structuringElement;
-	int _carCount;
 };

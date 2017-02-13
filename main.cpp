@@ -4,6 +4,7 @@
 
 int main(int argc, char* argv[]) {
 //	qRegisterMetaType<cv::Mat>();
+	qRegisterMetaType<QVector<QLineF>>();
 	QApplication a(argc, argv);
 	MainWindow w;
 	w.show();

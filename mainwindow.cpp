@@ -14,15 +14,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionOpen_File, SIGNAL(triggered()), SLOT(actionFileOpen()));
 
 	ui->graphicsView->setScene(new QGraphicsScene(this));
-//	ui->graphicsView->scene()->setSceneRect(QRectF(0, 0, 640, 480));
-
 	pixmapItem.reset(new QGraphicsPixmapItem());
 	ui->graphicsView->scene()->addItem(pixmapItem.data());
 	filterThread.start();
 	filter.moveToThread(&filterThread);
 
 	polylineItem.reset(new GraphicsItemPolyline(ui->graphicsView->scene()));
+	connect(polylineItem.data(), SIGNAL(segmentsUpdated(QVector<QLineF>)), &filter, SLOT(setSegments(QVector<QLineF>)));
 	connect(&filter, SIGNAL(newFrame(QImage)), SLOT(setImage(QImage)));
+
+	QMetaObject::invokeMethod(&filter, "open", Q_ARG(QString, "c:\\Users\\Vyacheslav\\Projects\\TestVideo\\day.avi"));
 }
 
 MainWindow::~MainWindow() {

@@ -29,19 +29,15 @@ private:
 
 class AbstractFilter : public QObject {
 	Q_OBJECT
-	Q_PROPERTY(QAbstractVideoSurface *videoSurface READ videoSurface WRITE setVideoSurface)
 public:
 	explicit AbstractFilter(QObject* parent = nullptr) :
 		QObject(parent),
-		_frameCount(0),
-		_surface(nullptr)
+		_frameCount(0)
 	{
 		// empty
 	}
 	Q_SLOT bool open(const QString& filename);
 	Q_SLOT bool open(int cvCamId);
-	QAbstractVideoSurface* videoSurface() const { return _surface; }
-	void setVideoSurface(QAbstractVideoSurface* surface);
 	Q_SIGNAL void newFrame(const QImage& image);
 
 protected:
@@ -53,8 +49,6 @@ protected:
 	}
 
 private:
-	QAbstractVideoSurface *_surface;
-	QVideoSurfaceFormat _format;
 	QScopedPointer<cv::VideoCapture> _videoCapture;
 	QBasicTimer _timer;
 	void timerEvent(QTimerEvent* ev) override;
@@ -63,3 +57,5 @@ private:
 	void stop();
 
 };
+
+bool intersects(const QLineF& l1, const QLineF& l2, bool& directionDown);
