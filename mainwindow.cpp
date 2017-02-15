@@ -1,4 +1,3 @@
-#include <QGraphicsVideoItem>
 #include <QGraphicsPixmapItem>
 #include <QFileDialog>
 

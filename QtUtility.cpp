@@ -57,6 +57,7 @@ QtCVImage& QtCVImage::operator=(const cv::Mat& mat) {
 	return *this;
 }
 
+#ifdef VIDEOFRAME_SUPPORT
 QtCVImage& QtCVImage::operator=(const QVideoFrame& frame) {
 	_frame = frame;
 	if (_frame.map(QAbstractVideoBuffer::ReadOnly)) {
@@ -65,6 +66,7 @@ QtCVImage& QtCVImage::operator=(const QVideoFrame& frame) {
 	}
 	return *this;
 }
+#endif
 
 
 

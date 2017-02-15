@@ -1,4 +1,4 @@
-#define SHOW_STEPS 1
+#define SHOW_STEPS 0
 
 #include <algorithm>
 #include <iterator>

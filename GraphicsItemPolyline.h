@@ -48,6 +48,7 @@ private:
 	QMenu *_menu;
 	QPointF _menuPoint;
 	mutable QRectF _boundRect;
+	QAction *_invertDirectionAction;
 
 	struct Item {
 		QPointF cache;

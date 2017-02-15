@@ -1,6 +1,5 @@
 #pragma once
 #include <QGraphicsScene>
-#include <QGraphicsVideoItem>
 #include <QMainWindow>
 #include <QThread>
 

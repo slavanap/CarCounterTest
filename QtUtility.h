@@ -1,30 +1,37 @@
 #pragma once
 
-#include <QAbstractVideoSurface>
 #include <QBasicTimer>
 #include <QImage>
-#include <QVideoFrame>
-#include <QVideoSurfaceFormat>
+#ifdef VIDEOFRAME_SUPPORT
+#	include <QVideoFrame>
+#endif
 #include <opencv2/opencv.hpp>
 
 class QtCVImage {
 public:
 	QtCVImage(const QImage& image) { operator=(image); }
 	QtCVImage(const cv::Mat& mat) { operator=(mat); }
-	QtCVImage(const QVideoFrame& frame) { operator=(frame); }
-	
+
 	const QImage& image() const;
 	const cv::Mat& mat() const;
 	QtCVImage& operator=(const QtCVImage& other);
 	QtCVImage& operator=(const QImage& image);
 	QtCVImage& operator=(const cv::Mat& mat);
-	QtCVImage& operator=(const QVideoFrame& frame);
 	operator QImage() const { return image(); }
 	operator cv::Mat() const { return mat(); }
+
 private:
-	QVideoFrame _frame;
 	mutable QImage _image;
 	mutable cv::Mat _mat;
+
+#ifdef VIDEOFRAME_SUPPORT
+public:
+	QtCVImage(const QVideoFrame& frame) { operator=(frame); }
+	QtCVImage& operator=(const QVideoFrame& frame);
+private:
+	QVideoFrame _frame;
+#endif
+
 };
 
 class AbstractFilter : public QObject {

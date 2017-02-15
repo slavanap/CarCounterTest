@@ -76,8 +76,11 @@ GraphicsItemPolyline::GraphicsItemPolyline(QGraphicsScene* scene, QGraphicsItem*
 	_menu->addAction(action);
 	action = new QAction(this);
 	action->setText(tr("Invert direction"));
+	action->setCheckable(true);
 	connect(action, SIGNAL(triggered()), this, SLOT(menuInvertSegment()));
 	_menu->addAction(action);
+	_invertDirectionAction = action;
+
 	scene->addItem(this);
 
 	_pen.setWidth(3);
@@ -106,10 +109,10 @@ QRectF GraphicsItemPolyline::boundingRect() const {
 }
 
 void GraphicsItemPolyline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-#if 0
 	QMutexLocker lock(&_mutex);
 	Q_UNUSED(option);
 	Q_UNUSED(widget);
+#if 0
 	auto oldPen = painter->pen();
 	QPointF lastPoint = _points[0].cache;
 	bool inverted = _points[0].invertDirection;
@@ -141,6 +144,12 @@ QVector<QLineF> GraphicsItemPolyline::segments() const {
 void GraphicsItemPolyline::mousePressEvent(QGraphicsSceneMouseEvent* ev) {
 	if (ev->button() == Qt::RightButton) {
 		_menuPoint = ev->pos();
+		{
+			QMutexLocker lock(&_mutex);
+			int pos = IndexOfSegment(_menuPoint);
+			auto &point = _points[pos];
+			_invertDirectionAction->setChecked(point.invertDirection);
+		}
 		_menu->exec(ev->screenPos());
 	}
 	QGraphicsObject::mousePressEvent(ev);
