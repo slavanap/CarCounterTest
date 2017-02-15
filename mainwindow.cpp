@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(polylineItem.data(), SIGNAL(segmentsUpdated(QVector<QLineF>)), &filter, SLOT(setSegments(QVector<QLineF>)));
 	connect(&filter, SIGNAL(newFrame(QImage)), SLOT(setImage(QImage)));
 
-	QMetaObject::invokeMethod(&filter, "open", Q_ARG(QString, "c:\\Users\\Vyacheslav\\Projects\\TestVideo\\day.avi"));
+	//QMetaObject::invokeMethod(&filter, "open", Q_ARG(QString, "c:\\Users\\Vyacheslav\\Projects\\TestVideo\\night.avi"));
 }
 
 MainWindow::~MainWindow() {
