@@ -1,4 +1,4 @@
-#define SHOW_STEPS 0
+#define SHOW_STEPS 1
 
 #include <algorithm>
 #include <iterator>
@@ -49,8 +49,8 @@ void CarDescriptor::predictNextPosition() {
 
 bool CarDescriptor::isCar() const {
 	return boundingRect.area() > 600 &&
-		0.2 < aspectRatio && aspectRatio < 4.0 &&
-		boundingRect.width > 40 && boundingRect.height > 40 &&
+		3.0 < aspectRatio && aspectRatio < 20.0 &&
+		boundingRect.width > 40 &&
 		diagonalSize > 70.0 &&
 		cv::contourArea(contour)/boundingRect.area() > 0.5;
 }
@@ -140,7 +140,7 @@ DetectFilter::DetectFilter(QObject* parent) :
 	_mutex(QMutex::Recursive),
 	_carsCount(0)
 {
-	_structuringElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+	_structuringElement = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
 }
 
 bool DetectFilter::process(cv::Mat& currentFrame) {
@@ -154,16 +154,16 @@ bool DetectFilter::process(cv::Mat& currentFrame) {
 
 	cv::Mat prevFrameCopy, curFrameCopy, imgDifference, imgThresh;
 	cv::cvtColor(currentFrame, curFrameCopy, CV_BGR2GRAY);
-	cv::GaussianBlur(curFrameCopy, curFrameCopy, cv::Size(5,5), 0);
-	cv::cvtColor(_prevFrame, prevFrameCopy, CV_BGR2GRAY);
-	cv::GaussianBlur(prevFrameCopy, prevFrameCopy, cv::Size(5,5), 0);
-	cv::absdiff(prevFrameCopy, curFrameCopy, imgDifference);
-	cv::threshold(imgDifference, imgThresh, 15, 255.0, CV_THRESH_BINARY);
-	for (int i = 0; i < 3; i++) {
+	//cv::GaussianBlur(curFrameCopy, curFrameCopy, cv::Size(5,5), 0);
+//	cv::cvtColor(_prevFrame, prevFrameCopy, CV_BGR2GRAY);
+//	cv::GaussianBlur(prevFrameCopy, prevFrameCopy, cv::Size(5,5), 0);
+//	cv::absdiff(prevFrameCopy, curFrameCopy, imgDifference);
+	cv::threshold(curFrameCopy, imgThresh, 100, 255.0, CV_THRESH_BINARY);
+//	for (int i = 0; i < 3; i++) {
 		cv::dilate(imgThresh, imgThresh, _structuringElement);
-		cv::dilate(imgThresh, imgThresh, _structuringElement);
-		cv::erode(imgThresh, imgThresh, _structuringElement);
-	}
+//		cv::dilate(imgThresh, imgThresh, _structuringElement);
+//		cv::erode(imgThresh, imgThresh, _structuringElement);
+//	}
 	std::vector<std::vector<cv::Point>> contours;
 	cv::findContours(imgThresh, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_KCOS);
 #if SHOW_STEPS
