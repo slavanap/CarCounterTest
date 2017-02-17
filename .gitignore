@@ -1,0 +1,10 @@
+/.vs
+/Debug
+/GeneratedFiles
+/Release
+/temp
+/x64
+/*.user
+/*.VC.db
+/*.VC.VC.opendb
+/*.pro.user
