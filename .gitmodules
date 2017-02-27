@@ -1,0 +1,3 @@
+[submodule "metest/ssifSource"]
+	path = metest/ssifSource
+	url = https://github.com/slavanap/ssifSource.git
