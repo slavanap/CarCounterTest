@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	filter.moveToThread(&filterThread);
 
 	polylineItem.reset(new GraphicsItemPolyline(ui->graphicsView->scene()));
+	filter.setSegments(polylineItem->segments());
 	connect(polylineItem.data(), SIGNAL(segmentsUpdated(QVector<QLineF>)), &filter, SLOT(setSegments(QVector<QLineF>)));
 	connect(&filter, SIGNAL(newFrame(QImage)), SLOT(setImage(QImage)));
 

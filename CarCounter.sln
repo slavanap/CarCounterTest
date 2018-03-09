@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CarCounter", "CarCounter.vcxproj", "{1F40EF0C-F18F-354A-8188-DC3832FFE2BA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CarCounter", "CarCounter.vcxproj", "{0E7B7348-F31A-34FF-A136-204E0471B033}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,15 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1F40EF0C-F18F-354A-8188-DC3832FFE2BA}.Debug|x64.ActiveCfg = Debug|x64
-		{1F40EF0C-F18F-354A-8188-DC3832FFE2BA}.Debug|x64.Build.0 = Debug|x64
-		{1F40EF0C-F18F-354A-8188-DC3832FFE2BA}.Release|x64.ActiveCfg = Release|x64
-		{1F40EF0C-F18F-354A-8188-DC3832FFE2BA}.Release|x64.Build.0 = Release|x64
+		{0E7B7348-F31A-34FF-A136-204E0471B033}.Debug|x64.ActiveCfg = Debug|x64
+		{0E7B7348-F31A-34FF-A136-204E0471B033}.Debug|x64.Build.0 = Debug|x64
+		{0E7B7348-F31A-34FF-A136-204E0471B033}.Release|x64.ActiveCfg = Release|x64
+		{0E7B7348-F31A-34FF-A136-204E0471B033}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8A9FBCA5-F8D6-4DA5-BF6B-A6D6F1B4178B}
 	EndGlobalSection
 EndGlobal

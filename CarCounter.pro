@@ -13,10 +13,10 @@ TEMPLATE = app
 # OpenCV
 msvc {
     INCLUDEPATH += "C:/Program Files/opencv/build/include"
-    LIBS += -L"C:/Program Files/opencv/build/x64/vc14/lib"
+    LIBS += -L"C:/Program Files/opencv/build/x64/vc15/lib"
 }
-Debug:LIBS += -lopencv_world320d
-Release:LIBS += -lopencv_world320
+Debug:LIBS += -lopencv_world341d
+Release:LIBS += -lopencv_world341
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings

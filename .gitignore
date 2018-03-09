@@ -7,4 +7,5 @@
 /*.user
 /*.VC.db
 /*.VC.VC.opendb
-/*.pro.user 
+/*.pro.user
+/.qmake.stash
